@@ -1,0 +1,29 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Şehir Sevgisi Anketleri{% endblock %}</title>
+    <!-- Modern Font: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Ana CSS Dosyası -->
+    <link rel="stylesheet" href="{% static 'polls/style.css' %}">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <a href="{% url 'polls:index' %}" class="logo">🌟 Şehir Anketleri</a>
+        </header>
+        <main class="app-content">
+            {% block content %}
+            {% endblock content %}
+        </main>
+        <footer class="app-footer">
+            <p>&copy; 2026 Şehir Sevgisi Araştırmaları</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,15 +1,31 @@
-<form action="{% url 'polls:vote' question.id %}" method="post">
-    {% csrf_token %}
-    <fieldset>
-        <legend>
-            <h1>{{ question.question_text }}</h1>
-        </legend>
-        {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+{% extends "polls/base.html" %}
 
-        {% for choice in question.choice_set.all %}
-        <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
-        <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br>
-        {% endfor %}
-    </fieldset>
-    <input type="submit" value="Oy Ver">
-</form>
+{% block content %}
+<div class="poll-detail-container">
+    <div class="poll-detail-card">
+        <h1 class="question-header">{{ question.question_text }}</h1>
+
+        {% if error_message %}
+            <div class="error-message">
+                <p><strong>⚠️ {{ error_message }}</strong></p>
+            </div>
+        {% endif %}
+
+        <form action="{% url 'polls:vote' question.id %}" method="post" class="poll-form">
+            {% csrf_token %}
+            
+            <div class="options-container">
+                {% for choice in question.choice_set.all %}
+                <label class="custom-radio-option" for="choice{{ forloop.counter }}">
+                    <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}" class="hidden-radio">
+                    <span class="radio-label-text">{{ choice.choice_text }}</span>
+                    <span class="custom-radio-button"></span>
+                </label>
+                {% endfor %}
+            </div>
+
+            <button type="submit" class="btn-primary">Oy Ver 🚀</button>
+        </form>
+    </div>
+</div>
+{% endblock content %}

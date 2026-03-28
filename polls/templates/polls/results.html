@@ -1,9 +1,36 @@
-<h1>{{ question.question_text }} - Sonuçlar</h1>
+{% extends "polls/base.html" %}
 
-<ul>
-    {% for choice in question.choice_set.all %}
-    <li>{{ choice.choice_text }} -- {{ choice.votes }} Oy</li>
-    {% endfor %}
-</ul>
+{% block content %}
+<div class="poll-results-container">
+    <div class="results-card">
+        <h1 class="results-title">Sonuçlar</h1>
+        <h2 class="question-text">{{ question.question_text }}</h2>
 
-<a href="{% url 'polls:detail' question.id %}">Tekrar Oy Ver?</a>
+        <div class="results-list">
+            {% for choice in question.choice_set.all %}
+            <div class="result-item">
+                <div class="result-info">
+                    <span class="choice-text">{{ choice.choice_text }}</span>
+                    <span class="vote-count">{{ choice.votes }} Oy</span>
+                </div>
+
+                <div class="progress-bar-container">
+                    <div class="progress-fill" style="width:{{ choice.votes|default:0 }}%;"></div>
+                </div>
+            </div>
+            {% empty %}
+            <p>Henüz bu anket için seçenek veya oy bulunmuyor.</p>
+            {% endfor %}
+        </div>
+
+        <div class="action-buttons">
+            <a href="{% url 'polls:detail' question.id %}" class="btn-secondary">
+                Tekrar Oy Ver 🗳️
+            </a>
+            <a href="{% url 'polls:index' %}" class="btn-tertiary">
+                Ana Sayfaya Dön 🏠
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock content %}
