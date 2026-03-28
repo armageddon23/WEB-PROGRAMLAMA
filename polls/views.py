@@ -1,21 +1,43 @@
+from django.db.models import F
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
-from .models import Question
+from django.urls import reverse
+from django.views import generic # Generic view'lar için eklendi
 
-def index(request):
-    # En son eklenen 5 soruyu (şehri) getir
-    latest_question_list = Question.objects.order_by("-pub_date")[:5]
-    context = {"latest_question_list": latest_question_list}
-    return render(request, "polls/index.html", context)
+from .models import Choice, Question
 
-def detail(request, question_id):
-    # Soru yoksa otomatik 404 hatası döndürür
-    question = get_object_or_404(Question, pk=question_id)
-    return render(request, "polls/detail.html", {"question": question})
+class IndexView(generic.ListView):
+    template_name = "polls/index.html"
+    context_object_name = "latest_question_list"
 
-def results(request, question_id):
-    question = get_object_or_404(Question, pk=question_id)
-    return render(request, "polls/results.html", {"question": question})
+    def get_queryset(self):
+        """En son yayınlanan 5 soruyu getir."""
+        return Question.objects.order_by("-pub_date")[:5]
+
+class DetailView(generic.DetailView):
+    model = Question
+    template_name = "polls/detail.html"
+
+class ResultsView(generic.DetailView):
+    model = Question
+    template_name = "polls/results.html"
 
 def vote(request, question_id):
-    # Oy verme işlemi (Bölüm 4'te detaylandıracağız)
-    return render(request, "polls/vote.html", {"question_id": question_id})
+    # Senin yazdığın vote fonksiyonu aynen kalabilir, 
+    # çünkü bu özel bir işlem (POST) içeriyor.
+    question = get_object_or_404(Question, pk=question_id)
+    try:
+        selected_choice = question.choice_set.get(pk=request.POST["choice"])
+    except (KeyError, Choice.DoesNotExist):
+        return render(
+            request,
+            "polls/detail.html",
+            {
+                "question": question,
+                "error_message": "Lütfen bir seçenek belirleyin.",
+            },
+        )
+    else:
+        selected_choice.votes = F("votes") + 1
+        selected_choice.save()
+        return HttpResponseRedirect(reverse("polls:results", args=(question.id,)))
