@@ -1,0 +1,10 @@
+<h2>Şehir Sevgisi Anketleri</h2>
+{% if latest_question_list %}
+<ul>
+    {% for question in latest_question_list %}
+    <li><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>Henüz eklenmiş bir anket yok.</p>
+{% endif %}
