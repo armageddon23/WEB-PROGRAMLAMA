@@ -1,0 +1,24 @@
+/* Başlıkları mavi (şehir rengi) yapalım */
+h1,
+h2 {
+    color: #2c3e50;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Anket linklerini yeşil yapalım */
+li a {
+    color: #27ae60;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+li a:hover {
+    color: #2ecc71;
+    text-decoration: underline;
+}
+
+/* Arka plana bir renk veya resim verelim */
+body {
+    background: #f4f7f6 url("images/background.webp") no-repeat;
+    padding: 20px;
+}
