@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Choice, Question
+from .models import Choice, Question, VoteRecord
+
 
 # Seçenekleri sorunun içine satır olarak ekleme (TabularInline daha az yer kaplar)
 class ChoiceInline(admin.TabularInline):
@@ -24,3 +25,10 @@ class QuestionAdmin(admin.ModelAdmin):
     search_fields = ["question_text"]
 
 admin.site.register(Question, QuestionAdmin)
+
+class VoteRecordAdmin(admin.ModelAdmin):
+    list_display = ["city", "question", "choice", "created_at"]
+    list_filter = ["city", "created_at"]
+    search_fields = ["city"]
+
+admin.site.register(VoteRecord, VoteRecordAdmin)

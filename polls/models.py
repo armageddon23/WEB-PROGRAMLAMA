@@ -34,3 +34,12 @@ class Choice(models.Model):
 
     def __str__(self):
         return self.choice_text
+
+class VoteRecord(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    choice = models.ForeignKey(Choice, on_delete=models.CASCADE)
+    city = models.CharField(max_length=100, verbose_name="Şehir")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oy Kullanma Zamanı")
+
+    def __str__(self):
+        return f"{self.city} - {self.choice.choice_text}"

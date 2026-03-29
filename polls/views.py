@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.views import generic
 from django.utils import timezone
 
-from .models import Question, Choice
+from .models import Question, Choice, VoteRecord
 
 
 class IndexView(generic.ListView):
@@ -30,6 +30,9 @@ class ResultsView(generic.DetailView):
 def vote(request, question_id):
     """Bir soruya oy verme işlemi."""
     question = get_object_or_404(Question, pk=question_id)
+    
+    city = request.POST.get("city", "").strip()
+    
     try:
         selected_choice = question.choice_set.get(pk=request.POST["choice"])
     except (KeyError, Choice.DoesNotExist):
@@ -41,8 +44,23 @@ def vote(request, question_id):
                 "error_message": "Lütfen bir seçenek belirleyin.",
             },
         )
+        
+    if not city:
+        return render(
+            request,
+            "polls/detail.html",
+            {
+                "question": question,
+                "error_message": "Lütfen yaşadığınız şehri girin.",
+            },
+        )
+        
     else:
         selected_choice.votes = F("votes") + 1
         selected_choice.save()
         selected_choice.refresh_from_db()  # Güncel veritabanı değerini al
+        
+        # Oyu ve şehri veritabanına kaydet
+        VoteRecord.objects.create(question=question, choice=selected_choice, city=city)
+        
         return HttpResponseRedirect(reverse("polls:results", args=(question.id,)))
